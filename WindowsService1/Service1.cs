@@ -29,25 +29,24 @@ namespace WindowsService1
         // On Start of the Service
         protected override void OnStart(string[] args)
         {
-            string[] log = { "Starting server at "+ DateTime.Now.ToString("h:mm:ss tt") };
-            System.IO.File.WriteAllLines((AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt"), log);
-            string output = ExecuteSetup();
-            System.IO.File.AppendAllLines((AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt"),new []{ output });
+            log("Starting Server On Start");
+            ExecuteSetup();
+            log("Execution stopped");
         }
 
         // On Stop of the Service
         protected override void OnStop()
         {
-            string[] log = { "Stoping server at " + DateTime.Now.ToString("h:mm:ss tt") };
-            string output = ExecuteSetup();
-            System.IO.File.AppendAllLines((AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt"), new[] { output });
-            System.IO.File.AppendAllLines((AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt"),log);
+            log("On Stop method executing");
+            ExecuteSetup();
+            log("On Stop Execution is closing");
         }
 
         
         // Execution of the script
-        private string ExecuteSetup()
+        private void ExecuteSetup()
         {
+            log("Starting python execution");
             ProcessStartInfo start = new ProcessStartInfo();
             start.FileName = ConfigurationManager.AppSettings["compiler"]; 
             start.Arguments = ConfigurationManager.AppSettings["script"];   
@@ -64,7 +63,7 @@ namespace WindowsService1
                     using (StreamReader reader = process.StandardOutput)
                     {
                         string result = reader.ReadToEnd();
-                        return result;
+                        log(result);
                     }
                 }
             }
@@ -72,9 +71,16 @@ namespace WindowsService1
             catch(Exception exp)
             {
                 Debug.Write(exp);
-                return exp.ToString();
+                log(exp.ToString());
             }
             
+        }
+
+        public void log(string logging)
+        {
+            string file = AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt";
+            string[] log = { DateTime.Now.ToString("h:mm:ss tt") +" "+logging };
+            File.AppendAllLines(file, log);
         }
 
     }
