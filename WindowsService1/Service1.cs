@@ -26,15 +26,16 @@ namespace WindowsService1
             OnStart(null);
         }
 
+        // On Start of the Service
         protected override void OnStart(string[] args)
         {
-            //System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt");
             string[] log = { "Starting server at "+ DateTime.Now.ToString("h:mm:ss tt") };
             System.IO.File.WriteAllLines((AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt"), log);
             string output = ExecuteSetup();
             System.IO.File.AppendAllLines((AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt"),new []{ output });
         }
 
+        // On Stop of the Service
         protected override void OnStop()
         {
             string[] log = { "Stoping server at " + DateTime.Now.ToString("h:mm:ss tt") };
@@ -44,7 +45,7 @@ namespace WindowsService1
         }
 
         
-
+        // Execution of the script
         private string ExecuteSetup()
         {
             ProcessStartInfo start = new ProcessStartInfo();
@@ -67,6 +68,7 @@ namespace WindowsService1
                     }
                 }
             }
+
             catch(Exception exp)
             {
                 Debug.Write(exp);
