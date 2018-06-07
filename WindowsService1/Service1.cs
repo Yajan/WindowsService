@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -28,17 +28,18 @@ namespace WindowsService1
         protected override void OnStart(string[] args)
         {
             //System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt");
-            string[] flag = { "Starting server at "+ DateTime.Now.ToString("h:mm:ss tt") };
-            System.IO.File.WriteAllLines((AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt"), flag);
+            string[] log = { "Starting server at "+ DateTime.Now.ToString("h:mm:ss tt") };
+            System.IO.File.WriteAllLines((AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt"), log);
 
             string output = ExecuteSetup();
      
-            System.IO.File.AppendAllLines((AppDomain.CurrentDomain.BaseDirectory + "OnStart.txt"),new []{ output});
+            System.IO.File.AppendAllLines((AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt"),new []{ output});
         }
 
         protected override void OnStop()
         {
-            System.IO.File.Create(AppDomain.CurrentDomain.BaseDirectory + "OnStop.txt");
+            string[] log = { "Stoping server at " + DateTime.Now.ToString("h:mm:ss tt") };
+            System.IO.File.AppendAllLines((AppDomain.CurrentDomain.BaseDirectory + "ExecutionLog.txt"),log);
         }
 
         private string ExecuteSetup()
